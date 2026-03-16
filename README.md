@@ -1,6 +1,12 @@
 
 # CNN Kernel Lab: From Filters to Features
 
+## Code for this project
+
+Starter code can be found at:
+
+https://github.com/mbardoe-wellington/ConvolutionDemo3
+
 ## What We Have Done So Far
 
 So far you have learned that:
