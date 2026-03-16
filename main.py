@@ -162,9 +162,14 @@ def extract_features(image, kernels):
         # Use process_image to get the score for this kernel
         feature_map, pooled_map, score = None, None, None   # TODO
 
+        # Find various ways to score the pooled map, such as:
+        #   - np.max(pooled_map)    
+        #   - np.mean(pooled_map)
+        #   - np.sum(pooled_map)
         # Add the score to the features list
         # TODO
 
+    # After this loop, features should be a list of scores, several for each kernel.
     return features
 
 
