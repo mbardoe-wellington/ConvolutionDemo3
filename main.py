@@ -21,12 +21,11 @@ import matplotlib.pyplot as plt
 # ============================================================
 # SECTION 1: SETTINGS
 #
-# In this section, set the folder names and image size.
-# Do not change the helper code below unless you need to.
+# These folder names should match your project structure.
 # ============================================================
 
-CLASS_A_FOLDER = "images/circles"
-CLASS_B_FOLDER = "images/squares"
+CLASS_A_FOLDER = "data/circles"
+CLASS_B_FOLDER = "data/squares"
 IMAGE_SIZE = (128, 128)
 
 
@@ -61,41 +60,18 @@ def load_images(folder, size):
 # ============================================================
 # SECTION 3: RELU
 #
-# TASK:
-# Write a function called relu(x).
-#
-# It should replace all negative values in x with 0.
-#
-# Example:
-#   relu([-2, 3, -1, 5]) should become [0, 3, 0, 5]
+# ReLU replaces all negative values with 0.
 # ============================================================
 
 def relu(x):
     return np.maximum(x, 0)
 
 
-
-
 # ============================================================
 # SECTION 4: MAX POOLING
 #
-# TASK:
-# Write a function called max_pool(img, size=2).
-#
-# This function should:
-#   - break the image into non-overlapping size x size blocks
-#   - replace each block with its maximum value
-#
-# Example:
-#   a 2x2 block like
-#       [1 4]
-#       [2 3]
-#   should become
-#       [4]
-#
-# Hint:
-#   You may assume the image is 2D.
-#   You may crop off extra rows or columns if needed.
+# This function breaks an image into non-overlapping blocks
+# and keeps only the largest number from each block.
 # ============================================================
 
 def max_pool(img, size=2):
@@ -107,7 +83,6 @@ def max_pool(img, size=2):
     return img.reshape(h2 // size, size, w2 // size, size).max(axis=(1, 3))
 
 
-
 # ============================================================
 # SECTION 5: STUDENT KERNELS
 #
@@ -116,17 +91,18 @@ def max_pool(img, size=2):
 #
 # Suggestions:
 #   - one edge detector
-#   - one kernel that might respond to corners
-#   - one custom kernel of your own design
+#   - one corner detector
+#   - one custom kernel
 #
-# Store them in a list called kernels.
-#
-# Example structure:
-#   kernel1 = np.array([...], dtype=np.float32)
-#   kernel2 = ...
-#   kernel3 = ...
-#   kernels = [kernel1, kernel2, kernel3]
+# Then store them in a list called kernels.
 # ============================================================
+
+# Example:
+# kernel1 = np.array([
+#     [ 1, 0, -1],
+#     [ 1, 0, -1],
+#     [ 1, 0, -1]
+# ], dtype=np.float32)
 
 # TODO: define kernel1
 # TODO: define kernel2
@@ -139,32 +115,31 @@ kernels = []
 # SECTION 6: APPLY ONE KERNEL TO ONE IMAGE
 #
 # TASK:
-# Complete the function process_image(image, kernel).
+# Complete this function.
 #
 # It should:
-#   1. apply the kernel using cv2.filter2D
+#   1. apply the kernel with cv2.filter2D
 #   2. apply ReLU
 #   3. apply max pooling
-#   4. compute one score from the pooled map
+#   4. compute a score using np.max on the pooled map
 #
-# For the score, use the maximum value in the pooled map.
-#
-# The function should return:
+# Return:
 #   feature_map, pooled_map, score
 # ============================================================
 
 def process_image(image, kernel):
-    # TODO: apply the kernel
-    feature_map = None
 
-    # TODO: apply ReLU
-    feature_map = None
+    # Step 1: apply the kernel to the image
+    feature_map = cv2.filter2D(image, -1, kernel)
 
-    # TODO: apply max pooling
-    pooled_map = None
+    # Step 2: apply ReLU to the feature map
+    feature_map = relu(feature_map)
 
-    # TODO: compute one score from the pooled map
-    score = None
+    # Step 3: apply max pooling
+    pooled_map = None   # TODO: replace None
+
+    # Step 4: compute the score from the pooled map
+    score = None        # TODO: replace None
 
     return feature_map, pooled_map, score
 
@@ -173,24 +148,22 @@ def process_image(image, kernel):
 # SECTION 7: EXTRACT FEATURES FROM ONE IMAGE
 #
 # TASK:
-# Complete the function extract_features(image, kernels).
+# Apply every kernel in the list to one image.
+# Save the score from each kernel into a list called features.
 #
-# It should:
-#   - apply every kernel in the list
-#   - get one score from each kernel
-#   - return the list of scores
-#
-# Example:
-#   if there are 3 kernels, the output might look like
+# Example output:
 #   [2.1, 0.8, 1.7]
 # ============================================================
 
 def extract_features(image, kernels):
     features = []
 
-    # TODO: loop through the kernels
-    # TODO: process the image with each kernel
-    # TODO: add each score to the features list
+    for kernel in kernels:
+        # Use process_image to get the score for this kernel
+        feature_map, pooled_map, score = None, None, None   # TODO
+
+        # Add the score to the features list
+        # TODO
 
     return features
 
@@ -199,24 +172,24 @@ def extract_features(image, kernels):
 # SECTION 8: MAKE A PREDICTION
 #
 # TASK:
-# Write a simple rule to predict whether an image is a circle
-# or a square using the feature list.
-#
-# Return:
+# Write a simple rule that predicts:
 #   0 for circles
 #   1 for squares
 #
-# You must decide on your own rule.
+# based on the feature scores.
 #
-# Example ideas:
-#   - compare feature 0 and feature 1
-#   - add some features together
-#   - use np.argmax if your features represent class evidence
+# Start simple. For example:
+#   compare one feature to another
+#   or combine two features
 # ============================================================
 
 def predict_class(features):
-    # TODO: write your classification rule
-    prediction = None
+
+    # Example:
+    # feature0 = features[0]
+    # feature1 = features[1]
+
+    prediction = None   # TODO: replace None
     return prediction
 
 
@@ -224,30 +197,31 @@ def predict_class(features):
 # SECTION 9: EVALUATE MANY IMAGES
 #
 # TASK:
-# Complete this function so that it:
-#   - extracts features for each image
-#   - predicts the class
-#   - checks whether the prediction is correct
-#   - counts how many were correct
+# For every image:
+#   1. extract its features
+#   2. predict its class
+#   3. compare prediction to the true label
 #
-# The function should return the accuracy as a decimal.
-#
-# true_label will be:
-#   0 for circles
-#   1 for squares
+# Then compute:
+#   accuracy = correct / total
 # ============================================================
 
 def evaluate_dataset(images, kernels, true_label):
     correct = 0
     total = len(images)
 
-    # TODO: loop through the images
-    # TODO: extract features
-    # TODO: predict the class
-    # TODO: compare prediction to true_label
-    # TODO: count correct predictions
+    for image in images:
+        # Step 1: get the feature vector for this image
+        features = None   # TODO
 
-    accuracy = None
+        # Step 2: predict the class
+        prediction = None   # TODO
+
+        # Step 3: count correct predictions
+        if prediction == true_label:
+            correct += 1
+
+    accuracy = None   # TODO
     return accuracy
 
 
@@ -300,22 +274,46 @@ def main():
     circle_images, circle_names = load_images(CLASS_A_FOLDER, IMAGE_SIZE)
     square_images, square_names = load_images(CLASS_B_FOLDER, IMAGE_SIZE)
 
-    # TODO: evaluate circles
-    circle_accuracy = None
+    if not circle_images or not square_images:
+        print("Could not find images.")
+        print("Make sure your folders look like this:")
+        print("data/circles")
+        print("data/squares")
+        return
 
-    # TODO: evaluate squares
-    square_accuracy = None
+    # Print one example feature vector from each class
+    # Use the first image in each list
+    circle_features = None   # TODO
+    square_features = None   # TODO
 
-    # TODO: compute overall accuracy
-    overall_accuracy = None
+    print("Example circle feature vector:", circle_features)
+    print("Example square feature vector:", square_features)
+
+    # Evaluate each class separately
+    circle_accuracy = None   # TODO
+    square_accuracy = None   # TODO
+
+    # Compute weighted overall accuracy
+    total_images = len(circle_images) + len(square_images)
+    overall_accuracy = None   # TODO
 
     print("Circle accuracy:", circle_accuracy)
     print("Square accuracy:", square_accuracy)
     print("Overall accuracy:", overall_accuracy)
 
-    # TODO: choose one image and one kernel
-    # TODO: process that image
-    # TODO: show original image, feature map, and pooled map
+    # Show one example visualization
+    # Choose one image and one kernel
+    example_image = circle_images[0]
+    example_kernel = kernels[0]
+
+    feature_map, pooled_map, score = None, None, None   # TODO
+
+    show_results(
+        example_image,
+        feature_map,
+        pooled_map,
+        title=f"Example score = {score}"
+    )
 
 
 if __name__ == "__main__":
