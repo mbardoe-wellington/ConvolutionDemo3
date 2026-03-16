@@ -71,8 +71,9 @@ def load_images(folder, size):
 # ============================================================
 
 def relu(x):
-    # TODO: write this function
-    pass
+    return np.maximum(x, 0)
+
+
 
 
 # ============================================================
@@ -98,8 +99,13 @@ def relu(x):
 # ============================================================
 
 def max_pool(img, size=2):
-    # TODO: write this function
-    pass
+    h, w = img.shape
+    h2 = h - (h % size)
+    w2 = w - (w % size)
+    img = img[:h2, :w2]
+
+    return img.reshape(h2 // size, size, w2 // size, size).max(axis=(1, 3))
+
 
 
 # ============================================================
@@ -294,9 +300,6 @@ def main():
     # TODO: load the two image sets
     circle_images, circle_names = [], []
     square_images, square_names = [], []
-
-    # TODO: print an example feature vector for one circle
-    # TODO: print an example feature vector for one square
 
     # TODO: evaluate circles
     circle_accuracy = None
