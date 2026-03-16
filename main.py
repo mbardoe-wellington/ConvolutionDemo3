@@ -297,9 +297,8 @@ def show_results(image, feature_map, pooled_map, title=""):
 # ============================================================
 
 def main():
-    # TODO: load the two image sets
-    circle_images, circle_names = [], []
-    square_images, square_names = [], []
+    circle_images, circle_names = load_images(CLASS_A_FOLDER, IMAGE_SIZE)
+    square_images, square_names = load_images(CLASS_B_FOLDER, IMAGE_SIZE)
 
     # TODO: evaluate circles
     circle_accuracy = None
